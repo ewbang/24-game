@@ -51,8 +51,14 @@ python -m http.server 8000
 .
 ├── index.html                    # 全部页面、样式与脚本（单文件）
 └── assets/
+    ├── logo.svg                  # 横版 logo（品牌名 + 图标）
+    ├── logo-icon.svg             # 方形图标主文件（矢量）
+    ├── favicon-192.png           # 图标 PNG（192px，兼容旧环境 / iOS）
+    ├── favicon-512.png           # 图标 PNG（512px，PWA 场景）
     └── miniprogram-qr.jpg        # 微信小程序码原图（1280px）
 ```
+
+Logo 以网站既有的青绿（`#0f766e`）为主色、琥珀金（`#c9a227`）为点缀，核心图形是描边风格的「24」，背景四张半透明纸牌暗示玩法。已设置为站点 favicon，并置于页头标题左侧。
 
 ## 实现要点
 

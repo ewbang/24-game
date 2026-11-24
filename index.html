@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#f7f5ef" />
+<link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg" />
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png" />
+<link rel="apple-touch-icon" href="assets/favicon-192.png" />
 <title>24点游戏 - 在线玩算24点 | 凑廿四</title>
 <meta name="description" content="在线玩24点游戏：4张牌用加减乘除算出24，支持撤销、分步提示与精确分数解法，三种难度即开即玩。想随时随地练习？扫码体验「凑廿四」微信小程序。" />
 <meta name="robots" content="index,follow,max-image-preview:large" />
@@ -44,6 +48,9 @@
     "微信小程序入口"
   ]
 }
+</script>
+<script>
+!function(p){"use strict";!function(t){var s=window,e=document,i=p,c="".concat("https:"===e.location.protocol?"https://":"http://","sdk.51.la/js-sdk-pro.min.js"),n=e.createElement("script"),r=e.getElementsByTagName("script")[0];n.type="text/javascript",n.setAttribute("charset","UTF-8"),n.async=!0,n.src=c,n.id="LA_COLLECT",i.d=n;var o=function(){s.LA.ids.push(i)};s.LA?s.LA.ids&&o():(s.LA=p,s.LA.ids=[],o()),r.parentNode.insertBefore(n,r)}()}({id:"LONUxYndoBNAuS4X",ck:"LONUxYndoBNAuS4X"});
 </script>
 <script type="application/ld+json">
 {
@@ -142,14 +149,15 @@
     gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:0 4px;
   }
   .brand{ display:flex; align-items:baseline; gap:8px; margin:0; font-size:inherit; font-weight:inherit; }
+  .brand-mark{ align-self:center; width:36px; height:36px; flex:0 0 auto; margin-right:2px; }
   .brand b{
-    font-family:Georgia,"Times New Roman",serif;
-    font-size:38px; line-height:1; letter-spacing:-.02em; font-weight:700;
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+    font-size:30px; line-height:1; letter-spacing:.02em; font-weight:700;
     color:var(--ink);
   }
   .brand span{
-    font-size:13px; letter-spacing:.22em; color:var(--muted); font-weight:600;
-    padding-bottom:4px;
+    font-size:12px; letter-spacing:.12em; color:var(--muted); font-weight:500;
+    padding-bottom:2px;
   }
   .hstats{ display:flex; gap:8px; flex-wrap:wrap; }
   .pill{
@@ -581,7 +589,8 @@
     .card .expr{ font-size:10.5px; }
     .ops{ gap:9px; margin-top:14px; }
     .op{ height:50px; font-size:22px; border-radius:13px; }
-    .brand b{ font-size:32px; }
+    .brand b{ font-size:26px; }
+    .brand-mark{ width:32px; height:32px; }
     .pill{ padding:6px 9px; font-size:11px; }
     .promo{ gap:13px; padding:13px 14px; border-radius:15px; }
     .promo-qr img{ width:92px; height:92px; border-radius:10px; }
@@ -605,7 +614,7 @@
 <div class="app">
 
   <header class="hdr">
-    <h1 class="brand"><b>24</b><span>点游戏</span></h1>
+    <h1 class="brand"><img class="brand-mark" src="assets/logo-icon.svg" alt="" width="36" height="36" decoding="async"><b>凑廿四</b><span>· 24点游戏</span></h1>
     <div class="hstats">
       <div class="pill"><span>第</span><b id="roundNo">1</b><span>题</span></div>
       <div class="pill"><span>用时</span><b id="timeVal">00:00</b></div>
