@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#f7f5ef" />
+<title>24点游戏 - 在线玩算24点 | 凑廿四</title>
+<meta name="description" content="在线玩24点游戏：4张牌用加减乘除算出24，支持撤销、分步提示与精确分数解法，三种难度即开即玩。想随时随地练习？扫码体验「凑廿四」微信小程序。" />
+<meta name="robots" content="index,follow,max-image-preview:large" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="凑廿四 · 24点游戏" />
+<meta property="og:locale" content="zh_CN" />
+<meta property="og:title" content="24点游戏 - 在线玩算24点 | 凑廿四" />
+<meta property="og:description" content="4张牌，加减乘除，算出24。支持精确分数解法与分步提示；扫码即可在「凑廿四」微信小程序继续玩。" />
+<meta property="og:url" content="/" />
+<meta property="og:image" content="assets/miniprogram-qr.jpg" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="1280" />
+<meta property="og:image:alt" content="凑廿四微信小程序码" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="24点游戏 - 在线玩算24点 | 凑廿四" />
+<meta name="twitter:description" content="4张牌，加减乘除，算出24。支持精确分数解法与分步提示。" />
+<meta name="twitter:image" content="assets/miniprogram-qr.jpg" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "凑廿四 · 24点游戏",
+  "alternateName": ["24点游戏", "算24点", "24点在线"],
+  "applicationCategory": "GameApplication",
+  "operatingSystem": "Any",
+  "description": "在线24点游戏。四张牌用加减乘除合并，每个数字用一次，算出24即获胜。支持精确分数运算、三级难度、分步提示与撤销。",
+  "inLanguage": "zh-CN",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+  "featureList": [
+    "两张牌与四则运算符合并",
+    "精确分数运算",
+    "入门、标准、挑战三级难度",
+    "三级分步提示",
+    "撤销、重来与交换运算顺序",
+    "微信小程序入口"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "24点游戏的规则是什么？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "从四个1到13的数字出发，每次选两张牌和一个加、减、乘或除运算符合并成一张新牌。每个数字必须且只能使用一次，最终剩下的数字恰好等于24即为胜利。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "算24点时出现分数结果算不算正确？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "算正确。24点允许中间结果为分数。例如牌面3、3、8、8的解法是8 ÷ (3 − 8 ÷ 3) = 24，其中8 ÷ 3就是分数。本站使用精确有理数运算，不会出现浮点误差。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "算24点有哪些常用技巧？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "优先寻找3×8、4×6、2×12等能得到24的因数对；若三个数已凑出24，可尝试把第四个数构造成1或0；当加减乘都走不通时，考虑用除法构造分数。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "3 3 8 8 怎么算24点？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "8 ÷ (3 − 8 ÷ 3) = 24。这是需要分数中间值的经典难题：先算8 ÷ 3 = 8/3，再算3 − 8/3 = 1/3，最后8 ÷ 1/3 = 24。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "入门、标准和挑战难度有什么区别？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "入门模式的数字范围是1到10；标准模式为1到13；挑战模式保证题目必须使用除法才能解出。所有模式发出的牌面都确保有解。"
+      }
+    }
+  ]
+}
+</script>
+<style>
+  :root{
+    --ink:#151a21;
+    --ink-2:#3d4653;
+    --muted:#78828f;
+    --line:#e6e1d6;
+    --line-2:#f0ece3;
+    --paper:#fffefb;
+    --accent:#0f766e;
+    --accent-2:#0b5f59;
+    --accent-soft:#e8f5f1;
+    --warn:#b45309;
+    --warn-soft:#fdf4e6;
+    --red:#c0392b;
+    --gold:#c9a227;
+    --shadow-s:0 1px 2px rgba(20,26,33,.06);
+    --shadow-m:0 10px 24px -14px rgba(20,26,33,.35);
+    --shadow-l:0 26px 60px -30px rgba(20,26,33,.5);
+    --r:18px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:34px 18px 44px;
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(900px 620px at 8% -12%, #fff9ea 0%, rgba(255,249,234,0) 62%),
+      radial-gradient(760px 560px at 96% -6%, #e7f4ef 0%, rgba(231,244,239,0) 58%),
+      radial-gradient(900px 700px at 50% 118%, #f6efe1 0%, rgba(246,239,225,0) 60%),
+      linear-gradient(180deg,#f8f6f0 0%,#f2efe7 100%);
+    background-attachment:fixed;
+  }
+
+  .app{ width:min(760px,100%); margin:auto; }
+
+  /* ---------- 顶部 ---------- */
+  .hdr{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap:14px; flex-wrap:wrap; margin-bottom:14px; padding:0 4px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:8px; margin:0; font-size:inherit; font-weight:inherit; }
+  .brand b{
+    font-family:Georgia,"Times New Roman",serif;
+    font-size:38px; line-height:1; letter-spacing:-.02em; font-weight:700;
+    color:var(--ink);
+  }
+  .brand span{
+    font-size:13px; letter-spacing:.22em; color:var(--muted); font-weight:600;
+    padding-bottom:4px;
+  }
+  .hstats{ display:flex; gap:8px; flex-wrap:wrap; }
+  .pill{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:7px 11px; border-radius:999px;
+    background:rgba(255,255,255,.72);
+    border:1px solid var(--line);
+    box-shadow:var(--shadow-s);
+    font-size:12px; color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  .pill b{ font-size:13px; color:var(--ink); font-weight:700; }
+
+  .bar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin-bottom:12px; padding:0 4px;
+  }
+  .seg{
+    display:inline-flex; padding:3px; border-radius:999px;
+    background:rgba(255,255,255,.66); border:1px solid var(--line);
+    box-shadow:var(--shadow-s);
+  }
+  .seg button{
+    appearance:none; border:0; background:transparent; cursor:pointer;
+    font:inherit; font-size:12.5px; color:var(--muted);
+    padding:6px 14px; border-radius:999px; transition:color .18s, background .18s;
+  }
+  .seg button:hover{ color:var(--ink-2); }
+  .seg button.on{
+    background:var(--ink); color:#fff; font-weight:600;
+    box-shadow:0 2px 8px -2px rgba(20,26,33,.45);
+  }
+  .ghost{
+    appearance:none; cursor:pointer; font:inherit; font-size:12.5px;
+    color:var(--muted); background:rgba(255,255,255,.66);
+    border:1px solid var(--line); border-radius:999px;
+    padding:7px 13px; box-shadow:var(--shadow-s);
+    display:inline-flex; align-items:center; gap:7px;
+    transition:color .18s, border-color .18s;
+  }
+  .ghost:hover{ color:var(--ink-2); border-color:#d8d2c4; }
+  .ghost .led{
+    width:7px; height:7px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 0 3px rgba(15,118,110,.14);
+  }
+  .ghost.off .led{ background:#c7c2b6; box-shadow:none; }
+
+  /* ---------- 牌桌 ---------- */
+  .table{
+    position:relative;
+    padding:24px 22px 20px;
+    border-radius:26px;
+    background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.72));
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:
+      var(--shadow-l),
+      inset 0 1px 0 rgba(255,255,255,.9),
+      0 0 0 1px rgba(20,26,33,.045);
+    backdrop-filter:blur(8px);
+  }
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+  }
+
+  .card{
+    position:relative;
+    appearance:none; cursor:pointer;
+    height:150px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px;
+    padding:10px 6px;
+    border-radius:16px;
+    border:1px solid var(--line);
+    background:linear-gradient(175deg,#ffffff 0%,#fdfbf5 100%);
+    color:var(--ink);
+    font:inherit;
+    box-shadow:var(--shadow-s), 0 12px 22px -18px rgba(20,26,33,.5);
+    transition:transform .16s cubic-bezier(.2,.8,.2,1), box-shadow .16s, border-color .16s, background .16s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .card:hover{ transform:translateY(-3px); box-shadow:var(--shadow-m); border-color:#dcd6c8; }
+  .card:active{ transform:translateY(-1px) scale(.99); }
+  .card:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .card .suit{
+    position:absolute; top:10px; left:12px;
+    font-size:15px; line-height:1; color:#a9a294;
+  }
+  .card .suit.red{ color:#cf8078; }
+
+  .card .num{
+    font-size:44px; font-weight:700; line-height:1;
+    letter-spacing:-.03em; font-variant-numeric:tabular-nums;
+  }
+  .card .num.frac{ font-size:30px; letter-spacing:0; }
+
+  /* 竖式分数 */
+  .vf{
+    display:inline-flex; align-items:center; gap:.06em;
+    vertical-align:middle; line-height:1;
+  }
+  .vf-sign{ font-size:.82em; }
+  .vf-col{ display:inline-flex; flex-direction:column; align-items:center; }
+  .vf-n,.vf-d{ padding:0 .1em; }
+  .vf-bar{ display:block; width:100%; height:2px; background:currentColor; border-radius:1px; margin:.1em 0; }
+  .card .expr{
+    max-width:100%;
+    font-size:11.5px; line-height:1.25; color:var(--muted);
+    text-align:center; word-break:break-word;
+    min-height:14px;
+    padding:0 2px;
+  }
+  .card.merged{ background:linear-gradient(175deg,#ffffff 0%,#f7f6ef 100%); }
+  .card.merged .num{ color:var(--ink-2); }
+
+  .card.sel{
+    border-color:var(--accent);
+    background:linear-gradient(175deg,#ffffff 0%,#eefaf6 100%);
+    transform:translateY(-6px);
+    box-shadow:0 0 0 3px rgba(15,118,110,.15), 0 16px 30px -18px rgba(15,118,110,.55);
+  }
+  .card.sel .num{ color:var(--accent-2); }
+
+  .card.hint{
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,162,39,.18), var(--shadow-m);
+    animation:hintPulse 1.6s ease-in-out infinite;
+  }
+
+  .card.deal{ animation:dealIn .46s cubic-bezier(.2,.85,.25,1) both; }
+  .card.pop{ animation:popIn .34s cubic-bezier(.2,.9,.3,1.2) both; }
+
+  @keyframes dealIn{
+    from{ transform:translateY(18px) rotate(-1.5deg) scale(.95); }
+    to{ transform:none; }
+  }
+  @keyframes popIn{
+    0%{ transform:scale(.88); box-shadow:0 0 0 0 rgba(15,118,110,.35); }
+    60%{ transform:scale(1.04); }
+    100%{ transform:scale(1); box-shadow:var(--shadow-s); }
+  }
+  @keyframes hintPulse{
+    0%,100%{ box-shadow:0 0 0 3px rgba(201,162,39,.14), var(--shadow-m); }
+    50%{ box-shadow:0 0 0 6px rgba(201,162,39,.05), var(--shadow-m); }
+  }
+
+  /* ---------- 运算符 ---------- */
+  .ops{
+    display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px; margin-top:18px;
+  }
+  .op{
+    appearance:none; cursor:pointer; font:inherit;
+    height:58px; border-radius:15px;
+    border:1px solid var(--line);
+    background:linear-gradient(180deg,#ffffff,#fbf9f3);
+    color:var(--ink-2);
+    font-size:26px; font-weight:600; line-height:1;
+    box-shadow:var(--shadow-s);
+    transition:all .15s cubic-bezier(.2,.8,.2,1);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .op:hover{ border-color:#d8d2c4; transform:translateY(-2px); box-shadow:var(--shadow-m); }
+  .op:active{ transform:translateY(0) scale(.98); }
+  .op:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .op.on{
+    background:linear-gradient(180deg,var(--accent),var(--accent-2));
+    border-color:var(--accent-2); color:#fff;
+    box-shadow:0 8px 18px -10px rgba(15,118,110,.85);
+  }
+
+  /* ---------- 操作条 ---------- */
+  .acts{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-top:16px; align-items:center;
+  }
+  .acts button{
+    appearance:none; cursor:pointer; font:inherit; font-size:13px;
+    padding:9px 15px; border-radius:11px;
+    border:1px solid var(--line); background:rgba(255,255,255,.8);
+    color:var(--ink-2);
+    box-shadow:var(--shadow-s);
+    transition:all .15s;
+  }
+  .acts button:hover{ border-color:#d8d2c4; background:#fff; }
+  .acts button:disabled{ opacity:.42; cursor:not-allowed; box-shadow:none; }
+  .acts button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .acts .swap{ margin-left:auto; color:var(--accent-2); border-color:#cfe7e1; background:var(--accent-soft); }
+
+  .status{
+    margin:14px 2px 0;
+    min-height:21px;
+    font-size:13.5px; line-height:1.5; color:var(--muted);
+    transition:color .2s;
+  }
+  .status.warn{ color:var(--warn); }
+  .status.good{ color:var(--accent-2); font-weight:600; }
+  .status.hint{ color:#8a6a10; }
+  .status .vf{ font-size:.95em; }
+  .status .vf-bar{ height:1px; margin:.08em 0; }
+
+  .foot{
+    margin:16px 4px 0;
+    font-size:12px; line-height:1.7; color:#9aa1ab;
+  }
+  .foot kbd{
+    font:inherit; font-size:11px; padding:1px 5px;
+    border:1px solid var(--line); border-bottom-width:2px; border-radius:5px;
+    background:#fff; color:var(--ink-2);
+  }
+
+  /* ---------- 小程序推广 ---------- */
+  .promo{
+    display:flex; align-items:center; gap:16px;
+    margin-top:14px; padding:15px 18px;
+    border-radius:18px;
+    background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.68));
+    border:1px solid rgba(255,255,255,.9);
+    box-shadow:0 14px 30px -24px rgba(20,26,33,.6), 0 0 0 1px rgba(20,26,33,.04);
+    cursor:zoom-in;
+    transition:border-color .18s, box-shadow .18s;
+  }
+  .promo:hover{
+    border-color:rgba(15,118,110,.28);
+    box-shadow:0 18px 34px -24px rgba(15,118,110,.55), 0 0 0 1px rgba(15,118,110,.06);
+  }
+  .promo:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .promo-qr{ flex:0 0 auto; }
+  .promo-qr img{
+    display:block; width:120px; height:120px;
+    border-radius:12px; background:#fff;
+    box-shadow:0 0 0 1px rgba(20,26,33,.07);
+    transition:transform .18s, box-shadow .18s;
+  }
+  .promo:hover .promo-qr img{
+    transform:translateY(-2px);
+    box-shadow:0 0 0 1px rgba(15,118,110,.4), 0 12px 22px -14px rgba(15,118,110,.7);
+  }
+  .promo-txt{ min-width:0; }
+  .promo-txt .kicker{
+    margin:0 0 4px; font-size:10.5px; letter-spacing:.2em;
+    color:var(--muted); font-weight:600;
+  }
+  .promo-txt h3{ margin:0 0 5px; font-size:17px; letter-spacing:-.01em; }
+  .promo-txt p{ margin:0; font-size:12.5px; line-height:1.7; color:var(--muted); }
+  .promo-txt p b{ color:var(--ink-2); font-weight:600; }
+  .promo-cta{
+    margin-left:auto; flex:0 0 auto;
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:11.5px; color:var(--muted);
+    padding:7px 12px; border-radius:999px;
+    border:1px solid var(--line); background:rgba(255,255,255,.92);
+    transition:color .18s, border-color .18s;
+  }
+  .promo:hover .promo-cta{ color:var(--accent-2); border-color:#cfe7e1; }
+
+  .win-promo{
+    appearance:none; font:inherit; width:100%;
+    display:flex; align-items:center; gap:12px;
+    margin:0 0 14px; padding:10px 12px;
+    border-radius:12px; background:#f8f7f1;
+    border:1px solid #f0ece2;
+    text-align:left; cursor:zoom-in;
+    transition:border-color .18s, background .18s;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .win-promo:hover{ border-color:#dcd6c8; background:#fbfaf4; }
+  .win-promo:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .win-promo img{
+    width:58px; height:58px; border-radius:9px;
+    display:block; flex:0 0 auto; background:#fff;
+    box-shadow:0 0 0 1px rgba(20,26,33,.07);
+  }
+  .win-promo .t{ min-width:0; }
+  .win-promo b{ display:block; font-size:13px; color:var(--ink); margin-bottom:2px; }
+  .win-promo .t span{ display:block; font-size:11.5px; color:var(--muted); line-height:1.5; }
+  .win-promo .go{
+    margin-left:auto; flex:0 0 auto; display:grid; place-items:center;
+    width:26px; height:26px; border-radius:8px;
+    color:#a8a294; background:rgba(255,255,255,.85);
+    border:1px solid #ece7dc;
+    transition:color .18s, border-color .18s;
+  }
+  .win-promo:hover .go{ color:var(--accent-2); border-color:#cfe7e1; }
+
+  .qr-box{
+    width:min(330px,92vw);
+    padding:24px 24px 20px;
+    border-radius:22px; background:#fff;
+    box-shadow:0 40px 80px -30px rgba(20,26,33,.6);
+    text-align:center;
+    animation:riseIn .3s cubic-bezier(.2,.9,.3,1.1) both;
+  }
+  .qr-box img{
+    width:100%; max-width:262px; height:auto;
+    display:block; margin:0 auto 14px;
+    border-radius:14px; background:#fff;
+    box-shadow:0 0 0 1px rgba(20,26,33,.08);
+  }
+  .qr-box h4{ margin:0 0 6px; font-size:16px; }
+  .qr-box p{ margin:0 0 16px; font-size:12.5px; line-height:1.75; color:var(--muted); }
+  .qr-box button{
+    appearance:none; cursor:pointer; font:inherit; font-size:13px;
+    padding:9px 22px; border-radius:10px;
+    border:1px solid var(--line); background:#fff; color:var(--ink-2);
+    transition:border-color .15s;
+  }
+  .qr-box button:hover{ border-color:#d8d2c4; }
+
+  /* ---------- 内容区（可见文本，服务用户与检索） ---------- */
+  .guide{
+    margin-top:24px; padding:24px 26px;
+    border-radius:20px;
+    background:rgba(255,255,255,.6);
+    border:1px solid var(--line-2);
+    box-shadow:var(--shadow-s);
+  }
+  .guide h2{ margin:0 0 10px; font-size:18px; letter-spacing:-.01em; }
+  .guide h3{ margin:22px 0 8px; font-size:14.5px; color:var(--ink-2); }
+  .guide p, .guide li{ font-size:13px; line-height:1.85; color:var(--ink-2); }
+  .guide p{ margin:8px 0; }
+  .guide ol, .guide ul{ margin:8px 0; padding-left:22px; }
+  .guide li{ margin:4px 0; }
+  .guide .example{
+    margin:10px 0; padding:11px 15px;
+    border-radius:11px; background:#f8f7f1;
+    font-size:13px; line-height:1.9; color:var(--ink-2);
+    font-variant-numeric:tabular-nums;
+  }
+  .guide details{
+    padding:11px 0; border-top:1px solid var(--line-2);
+  }
+  .guide summary{
+    cursor:pointer; font-size:13.5px; font-weight:600;
+    color:var(--ink); list-style:none;
+  }
+  .guide summary::-webkit-details-marker{ display:none; }
+  .guide summary::before{ content:"＋ "; color:var(--accent); }
+  .guide details[open] summary::before{ content:"－ "; }
+  .guide details p{ margin:9px 0 2px; }
+
+  /* ---------- 胜利层 ---------- */
+  .veil{
+    position:fixed; inset:0; z-index:60;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(28,32,38,.28);
+    backdrop-filter:blur(6px);
+  }
+  .veil[hidden]{ display:none; }
+  .modal{
+    width:min(400px,100%);
+    max-height:86vh; overflow:auto;
+    padding:26px 24px 22px;
+    border-radius:22px;
+    background:linear-gradient(180deg,#ffffff,#fffdf6);
+    border:1px solid #fff;
+    box-shadow:0 40px 80px -30px rgba(20,26,33,.6);
+    text-align:center;
+    animation:riseIn .32s cubic-bezier(.2,.9,.3,1.1) both;
+  }
+  .modal .check{
+    width:52px; height:52px; margin:0 auto 12px;
+    display:grid; place-items:center;
+    border-radius:50%;
+    background:var(--accent-soft);
+    color:var(--accent-2);
+    box-shadow:inset 0 0 0 1px rgba(15,118,110,.18);
+  }
+  .modal h2{
+    margin:0 0 4px; font-size:22px; letter-spacing:-.01em;
+  }
+  .modal .sub{ margin:0 0 16px; font-size:13px; color:var(--muted); }
+  .modal .your{
+    margin:0 0 16px; padding:12px 14px;
+    border-radius:12px; background:#f8f7f1; border:1px dashed var(--line);
+    font-size:15px; color:var(--ink-2);
+    font-variant-numeric:tabular-nums;
+    word-break:break-word;
+  }
+  .modal .gains{
+    display:flex; justify-content:center; gap:16px; flex-wrap:wrap;
+    margin-bottom:18px; font-size:12.5px; color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  .modal .gains b{ display:block; font-size:16px; color:var(--ink); margin-top:2px; }
+  .modal .primary{
+    appearance:none; cursor:pointer; font:inherit; font-size:14px; font-weight:600;
+    width:100%; padding:13px; border-radius:13px; border:0;
+    background:linear-gradient(180deg,var(--accent),var(--accent-2));
+    color:#fff; box-shadow:0 12px 24px -14px rgba(15,118,110,.9);
+    transition:transform .15s, box-shadow .15s;
+  }
+  .modal .primary:hover{ transform:translateY(-1px); box-shadow:0 16px 28px -14px rgba(15,118,110,.95); }
+  .modal details{ margin:0 0 16px; text-align:left; }
+  .modal summary{
+    cursor:pointer; font-size:12.5px; color:var(--muted);
+    padding:6px 0; list-style:none;
+  }
+  .modal summary::-webkit-details-marker{ display:none; }
+  .modal summary::before{ content:"＋ "; color:var(--accent); }
+  .modal details[open] summary::before{ content:"－ "; }
+  .modal ul{
+    margin:6px 0 0; padding:10px 12px;
+    list-style:none; border-radius:10px; background:#f8f7f1;
+    max-height:150px; overflow:auto;
+  }
+  .modal li{
+    font-size:12.5px; color:var(--ink-2); line-height:2;
+    border-bottom:1px solid #efeae0; font-variant-numeric:tabular-nums;
+  }
+  .modal li:last-child{ border-bottom:0; }
+
+  @keyframes riseIn{
+    from{ transform:translateY(18px) scale(.96); }
+    to{ transform:none; }
+  }
+
+  @media (max-width:600px){
+    body{ padding:22px 12px 32px; }
+    .table{ padding:18px 14px 16px; border-radius:22px; }
+    .cards{ gap:9px; }
+    .card{ height:124px; border-radius:14px; padding:8px 4px; }
+    .card .num{ font-size:34px; }
+    .card .num.frac{ font-size:24px; }
+    .card .expr{ font-size:10.5px; }
+    .ops{ gap:9px; margin-top:14px; }
+    .op{ height:50px; font-size:22px; border-radius:13px; }
+    .brand b{ font-size:32px; }
+    .pill{ padding:6px 9px; font-size:11px; }
+    .promo{ gap:13px; padding:13px 14px; border-radius:15px; }
+    .promo-qr img{ width:92px; height:92px; border-radius:10px; }
+    .promo-txt h3{ font-size:15.5px; }
+    .promo-txt p{ font-size:11.5px; }
+    .promo-cta{ display:none; }
+    .win-promo img{ width:52px; height:52px; }
+  }
+  @media (max-width:420px){
+    .cards{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .card{ height:112px; }
+    .card .num{ font-size:34px; }
+    .card .num.frac{ font-size:25px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hdr">
+    <h1 class="brand"><b>24</b><span>点游戏</span></h1>
+    <div class="hstats">
+      <div class="pill"><span>第</span><b id="roundNo">1</b><span>题</span></div>
+      <div class="pill"><span>用时</span><b id="timeVal">00:00</b></div>
+      <div class="pill"><span>连击</span><b id="streakVal">0</b></div>
+      <div class="pill"><span>得分</span><b id="scoreVal">0</b></div>
+    </div>
+  </header>
+
+  <main>
+  <div class="bar">
+    <div class="seg" id="diff">
+      <button type="button" data-d="easy">入门</button>
+      <button type="button" data-d="standard" class="on">标准</button>
+      <button type="button" data-d="hard">挑战</button>
+    </div>
+    <button type="button" class="ghost" id="sound" aria-pressed="true">
+      <span class="led"></span><span id="soundLabel">音效 开</span>
+    </button>
+  </div>
+
+  <section class="table">
+    <div class="cards" id="cards" role="group" aria-label="四张牌"></div>
+    <div class="ops" id="ops" role="group" aria-label="运算符"></div>
+    <div class="acts">
+      <button type="button" id="undo">撤销</button>
+      <button type="button" id="reset">重来</button>
+      <button type="button" id="hint">提示</button>
+      <button type="button" id="skip">换一题</button>
+      <button type="button" id="swap" class="swap" hidden>⇄ 交换顺序</button>
+    </div>
+    <p class="status" id="status" aria-live="polite">点两张牌，再选一个运算符</p>
+  </section>
+
+  <section class="promo" id="promoCard" role="button" tabindex="0" aria-label="放大查看凑廿四小程序码">
+    <div class="promo-qr">
+      <img src="assets/miniprogram-qr.jpg" alt="凑廿四微信小程序码，微信扫一扫即可打开" width="120" height="120" loading="lazy" decoding="async">
+    </div>
+    <div class="promo-txt">
+      <p class="kicker">微信小程序</p>
+      <h3>凑廿四</h3>
+      <p><b>微信扫一扫</b>即可开局，无需下载。</p>
+    </div>
+    <span class="promo-cta" aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      放大
+    </span>
+  </section>
+
+  <section class="guide" aria-labelledby="guideTitle">
+    <h2 id="guideTitle">24 点游戏规则与玩法</h2>
+    <p>24 点是一款经典的心算益智游戏。系统发出四个 1 到 13 的数字，玩家用加、减、乘、除把它们合并，最终结果恰好等于 24 即获胜。本页所有牌面都经过程序验证，保证有解。</p>
+    <ol>
+      <li>从四个数字开始，每个数字在 1 到 13 之间。</li>
+      <li>选两张牌和一个运算符（+、−、× 或 ÷），合并成一张新牌。</li>
+      <li>每张牌必须且只能使用一次；减法与除法可用「交换顺序」调整先后。</li>
+      <li>当只剩一张牌且结果为 24 时即获胜。</li>
+    </ol>
+
+    <h3>算 24 点的常用技巧</h3>
+    <ul>
+      <li>优先寻找 3×8、4×6、2×12 等能得到 24 的因数对。</li>
+      <li>若三个数已凑出 24，尝试把第四个数构造成 1 或 0。</li>
+      <li>当加减乘都走不通时，考虑用除法构造分数。</li>
+      <li>从 24 倒推：先想 24 能由哪两个数得到，再让剩余数字配合。</li>
+    </ul>
+
+    <h3>经典难题：3 3 8 8 怎么算 24 点？</h3>
+    <div class="example">
+      8 ÷ (3 − 8 ÷ 3) = 24<br>
+      8 ÷ 3 = 8/3　·　3 − 8/3 = 1/3　·　8 ÷ 1/3 = 24
+    </div>
+
+    <h3>常见问题</h3>
+    <details>
+      <summary>24点游戏的规则是什么？</summary>
+      <p>从四个1到13的数字出发，每次选两张牌和一个加、减、乘或除运算符合并成一张新牌。每个数字必须且只能使用一次，最终剩下的数字恰好等于24即为胜利。</p>
+    </details>
+    <details>
+      <summary>算24点时出现分数结果算不算正确？</summary>
+      <p>算正确。24点允许中间结果为分数。例如牌面3、3、8、8的解法是8 ÷ (3 − 8 ÷ 3) = 24，其中8 ÷ 3就是分数。本站使用精确有理数运算，不会出现浮点误差。</p>
+    </details>
+    <details>
+      <summary>算24点有哪些常用技巧？</summary>
+      <p>优先寻找3×8、4×6、2×12等能得到24的因数对；若三个数已凑出24，可尝试把第四个数构造成1或0；当加减乘都走不通时，考虑用除法构造分数。</p>
+    </details>
+    <details>
+      <summary>3 3 8 8 怎么算24点？</summary>
+      <p>8 ÷ (3 − 8 ÷ 3) = 24。这是需要分数中间值的经典难题：先算8 ÷ 3 = 8/3，再算3 − 8/3 = 1/3，最后8 ÷ 1/3 = 24。</p>
+    </details>
+    <details>
+      <summary>入门、标准和挑战难度有什么区别？</summary>
+      <p>入门模式的数字范围是1到10；标准模式为1到13；挑战模式保证题目必须使用除法才能解出。所有模式发出的牌面都确保有解。</p>
+    </details>
+  </section>
+  </main>
+
+  <footer class="foot">
+    每张牌必须且只能使用一次，中间结果允许出现分数。
+    快捷键：<kbd>1</kbd>–<kbd>4</kbd> 选牌 · <kbd>+</kbd><kbd>-</kbd><kbd>*</kbd><kbd>/</kbd> 选运算符 · <kbd>U</kbd> 撤销 · <kbd>H</kbd> 提示 · <kbd>R</kbd> 重来。
+  </footer>
+</div>
+
+<div class="veil" id="veil" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <div class="check" aria-hidden="true">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.2 5.2L20 7"/></svg>
+    </div>
+    <h2 id="winTitle">24 达成</h2>
+    <p class="sub" id="winSub">漂亮的一手</p>
+    <p class="your" id="winExpr"></p>
+    <div class="gains" id="winGains"></div>
+    <details id="winDetails">
+      <summary id="winSummary">本题全部解法</summary>
+      <ul id="winList"></ul>
+    </details>
+    <button type="button" class="win-promo" id="winPromo">
+      <img src="assets/miniprogram-qr.jpg" alt="" width="58" height="58" loading="lazy" decoding="async">
+      <div class="t">
+        <b>还想再来一局？</b>
+        <span>微信扫码，在「凑廿四」小程序里接着玩</span>
+      </div>
+      <span class="go" aria-hidden="true">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      </span>
+    </button>
+    <button type="button" class="primary" id="nextBtn">下一题</button>
+  </div>
+</div>
+
+<div class="veil" id="qrVeil" hidden>
+  <div class="qr-box" role="dialog" aria-modal="true" aria-label="凑廿四 小程序码">
+    <img src="assets/miniprogram-qr.jpg" alt="凑廿四微信小程序码，放大后可用微信扫一扫识别" width="262" height="262" loading="lazy" decoding="async">
+    <h4>凑廿四 · 微信小程序</h4>
+    <p id="qrHint">用微信「扫一扫」识别小程序码</p>
+    <button type="button" id="qrClose">关闭</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   0. SEO：部署到 http(s) 后自动补全 canonical 与分享图的绝对 URL
+      本地 file:// 打开时跳过，不影响离线试玩
+   ========================================================= */
+(function () {
+  if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+  var pageUrl = location.href.split('#')[0];
+  var imgUrl = new URL('assets/miniprogram-qr.jpg', pageUrl).href;
+
+  function setMeta(attr, key, value) {
+    var node = document.querySelector('meta[' + attr + '="' + key + '"]');
+    if (!node) {
+      node = document.createElement('meta');
+      node.setAttribute(attr, key);
+      document.head.appendChild(node);
+    }
+    node.setAttribute('content', value);
+  }
+  setMeta('property', 'og:url', pageUrl);
+  setMeta('property', 'og:image', imgUrl);
+  setMeta('name', 'twitter:image', imgUrl);
+
+  var canonical = document.createElement('link');
+  canonical.rel = 'canonical';
+  canonical.href = pageUrl;
+  document.head.appendChild(canonical);
+})();
+
+/* =========================================================
+   1. 有理数运算：全程分数，避免浮点误差
+   ========================================================= */
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { const t = a % b; a = b; b = t; } return a || 1; };
+function fr(n, d = 1) {
+  if (d === 0) return null;
+  if (d < 0) { n = -n; d = -d; }
+  const g = gcd(n, d);
+  return { n: n / g, d: d / g };
+}
+const fAdd = (a, b) => fr(a.n * b.d + b.n * a.d, a.d * b.d);
+const fSub = (a, b) => fr(a.n * b.d - b.n * a.d, a.d * b.d);
+const fMul = (a, b) => fr(a.n * b.n, a.d * b.d);
+const fDiv = (a, b) => (b.n === 0 ? null : fr(a.n * b.d, a.d * b.n));
+const fEq  = (a, b) => a.n === b.n && a.d === b.d;
+const fStr = a => (a.d === 1 ? String(a.n) : a.n + '/' + a.d);
+/** 竖式分数：分子在上、分数线居中、分母在下；整数原样返回 */
+function fHtml(a) {
+  if (a.d === 1) return String(a.n);
+  const sign = a.n < 0 ? '<span class="vf-sign">−</span>' : '';
+  return '<span class="vf">' + sign +
+    '<span class="vf-col"><span class="vf-n">' + Math.abs(a.n) + '</span>' +
+    '<span class="vf-bar"></span><span class="vf-d">' + a.d + '</span></span></span>';
+}
+const F24  = fr(24);
+
+const OPS = {
+  '+': { sym: '+', prec: 1, comm: true,  fn: fAdd },
+  '-': { sym: '−', prec: 1, comm: false, fn: fSub },
+  '*': { sym: '×', prec: 2, comm: true,  fn: fMul },
+  '/': { sym: '÷', prec: 2, comm: false, fn: fDiv }
+};
+const OPKEYS = ['+', '-', '*', '/'];
+
+/* =========================================================
+   2. 求解器
+   项（term）= { f: 数值, node: {text, prec}, tree }
+   tree 用于回溯"第一步该动哪两张牌"
+   ========================================================= */
+function buildTerm(a, b, op, canonical) {
+  const info = OPS[op];
+  const r = info.fn(a.f, b.f);
+  if (!r) return null;
+  let A = a, B = b;
+  if (canonical && info.comm && A.node.text > B.node.text) { A = b; B = a; }
+  const p = info.prec;
+  const lt = A.node.prec < p ? '(' + A.node.text + ')' : A.node.text;
+  const needR = info.comm ? B.node.prec < p : B.node.prec <= p;
+  const rt = needR ? '(' + B.node.text + ')' : B.node.text;
+  return {
+    f: r,
+    node: { text: lt + ' ' + info.sym + ' ' + rt, prec: p },
+    tree: { type: 'op', op: op, left: A.tree, right: B.tree }
+  };
+}
+
+/** 返回所有不同解法（按表达式去重），元素为 { text, tree } */
+function solveAll(cards, opKeys, limit) {
+  opKeys = opKeys || OPKEYS;
+  limit = limit || 240;
+  const out = [];
+  const seen = new Set();
+  const start = cards.map(c => ({
+    f: c.f,
+    node: { text: fStr(c.f), prec: 3 },
+    tree: { type: 'leaf', cardId: c.id }
+  }));
+
+  const walk = (list) => {
+    if (out.length >= limit) return;
+    if (list.length === 1) {
+      if (fEq(list[0].f, F24)) {
+        const t = list[0].node.text;
+        if (!seen.has(t)) { seen.add(t); out.push({ text: t, tree: list[0].tree }); }
+      }
+      return;
+    }
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const rest = [];
+        for (let k = 0; k < list.length; k++) if (k !== i && k !== j) rest.push(list[k]);
+        for (let oi = 0; oi < opKeys.length; oi++) {
+          const op = opKeys[oi];
+          const pairs = OPS[op].comm ? [[i, j]] : [[i, j], [j, i]];
+          for (let pi = 0; pi < pairs.length; pi++) {
+            const t = buildTerm(list[pairs[pi][0]], list[pairs[pi][1]], op, true);
+            if (!t) continue;
+            rest.push(t);
+            walk(rest);
+            rest.pop();
+          }
+        }
+      }
+    }
+  };
+
+  walk(start);
+  return out;
+}
+
+/** 从解树里找出最早可执行的一步（两张原始牌 + 运算符） */
+function firstMove(tree) {
+  if (!tree || tree.type !== 'op') return null;
+  if (tree.left.type === 'leaf' && tree.right.type === 'leaf') {
+    return { a: tree.left.cardId, b: tree.right.cardId, op: tree.op };
+  }
+  if (tree.left.type === 'op') {
+    const m = firstMove(tree.left);
+    if (m) return m;
+  }
+  return firstMove(tree.right);
+}
+
+/* =========================================================
+   3. 出题：只发有解的牌面
+   ========================================================= */
+function randInt(n) { return 1 + Math.floor(Math.random() * n); }
+
+function makeNumbers(mode) {
+  const max = mode === 'easy' ? 10 : 13;
+  let fallback = null;
+  for (let attempt = 0; attempt < 1200; attempt++) {
+    const nums = [randInt(max), randInt(max), randInt(max), randInt(max)];
+    const cards = nums.map((n, i) => ({ id: i, f: fr(n) }));
+    const all = solveAll(cards);
+    if (!all.length) continue;
+
+    if (mode === 'hard') {
+      const basic = solveAll(cards, ['+', '-', '*']);
+      if (basic.length === 0) return nums;   // 必须用到除法
+      if (!fallback) fallback = nums;
+      continue;
+    }
+    return nums;
+  }
+  return fallback || [3, 3, 8, 8];
+}
+
+/* =========================================================
+   4. 状态
+   ========================================================= */
+const SUITS = ['\u2660', '\u2665', '\u2666', '\u2663'];
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+};
+
+let idSeq = 1;
+const newId = () => 'c' + (idSeq++);
+
+const G = {
+  cards: [],
+  initial: [],
+  sel: [],
+  op: null,
+  history: [],
+  hintCards: [],
+  hints: 0,
+  solutions: [],
+  round: 1,
+  score: 0,
+  streak: 0,
+  best: 0,
+  solved: false,
+  elapsed: 0,
+  startTs: 0,
+  timerId: null,
+  difficulty: 'standard',
+  sound: true,
+  fxDeal: false,
+  fxPop: null,
+  lastNums: null
+};
+
+const el = {};
+
+/* ---------- 音效 ---------- */
+let audioCtx = null;
+function beep(freq, dur, type, vol) {
+  if (!G.sound) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    audioCtx = audioCtx || new AC();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.value = freq;
+    gain.gain.value = vol == null ? 0.045 : vol;
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (dur || 0.08));
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + (dur || 0.08));
+  } catch (e) { /* 音频不可用时静默 */ }
+}
+function fanfare() {
+  if (!G.sound) return;
+  [[523.25, 0], [659.25, 90], [783.99, 180], [1046.5, 280]].forEach(function (p) {
+    setTimeout(function () { beep(p[0], 0.22, 'sine', 0.055); }, p[1]);
+  });
+}
+
+/* ---------- 工具 ---------- */
+const byId = id => G.cards.find(c => c.id === id) || null;
+const fmtTime = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+
+function snapshot() {
+  return {
+    cards: G.cards.map(c => ({ id: c.id, f: { n: c.f.n, d: c.f.d }, node: { text: c.node.text, prec: c.node.prec }, merged: c.merged, suit: c.suit })),
+    sel: G.sel.slice(),
+    op: G.op
+  };
+}
+
+function status(msg, tone, html) {
+  if (html) el.status.innerHTML = msg;
+  else el.status.textContent = msg;
+  el.status.className = 'status' + (tone ? ' ' + tone : '');
+}
+const statusHtml = (msg, tone) => status(msg, tone, true);
+
+function idleStatus() {
+  if (G.solved) return;
+  if (G.sel.length === 0) status('点两张牌，再选一个运算符', '');
+  else if (G.sel.length === 1) status('再选一张牌', '');
+  else {
+    const a = byId(G.sel[0]), b = byId(G.sel[1]);
+    if (G.op && a && b) {
+      const t = buildTerm(a, b, G.op, false);
+      statusHtml(t ? (fHtml(a.f) + ' ' + OPS[G.op].sym + ' ' + fHtml(b.f) + ' = ' + fHtml(t.f)) : '不能除以 0', t ? '' : 'warn');
+    } else {
+      status('选一个运算符', '');
+    }
+  }
+}
+
+/* =========================================================
+   5. 渲染
+   ========================================================= */
+function render() {
+  /* 牌 */
+  el.cards.innerHTML = '';
+  G.cards.forEach((c, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'card';
+    b.dataset.id = c.id;
+    if (c.merged) b.classList.add('merged');
+    if (G.sel.indexOf(c.id) >= 0) b.classList.add('sel');
+    if (G.hintCards.indexOf(c.id) >= 0) b.classList.add('hint');
+    if (G.fxDeal) {
+      b.classList.add('deal');
+      b.style.animationDelay = (i * 55) + 'ms';
+    }
+    if (G.fxPop && G.fxPop === c.id) b.classList.add('pop');
+
+    const val = fStr(c.f);
+    b.setAttribute('aria-label', '牌面 ' + val + (G.sel.indexOf(c.id) >= 0 ? '，已选中' : ''));
+
+    let html = '';
+    if (!c.merged && c.suit) {
+      const red = c.suit === '\u2665' || c.suit === '\u2666';
+      html += '<span class="suit' + (red ? ' red' : '') + '">' + c.suit + '</span>';
+    }
+    html += '<span class="num' + (c.f.d !== 1 ? ' frac' : '') + '">' + fHtml(c.f) + '</span>';
+    html += '<span class="expr">' + (c.merged ? esc(c.node.text) : '') + '</span>';
+    b.innerHTML = html;
+    el.cards.appendChild(b);
+  });
+
+  /* 运算符 */
+  OPKEYS.forEach(op => {
+    const btn = el.ops.querySelector('[data-op="' + op + '"]');
+    if (!btn) return;
+    btn.classList.toggle('on', G.op === op);
+  });
+
+  /* 交换按钮 */
+  const canSwap = G.sel.length === 2;
+  el.swap.hidden = !canSwap;
+  el.undo.disabled = G.history.length === 0;
+
+  G.fxDeal = false;
+  G.fxPop = null;
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+}
+
+/* =========================================================
+   6. 计时
+   ========================================================= */
+function tick() {
+  if (G.solved) return;
+  G.elapsed = Math.floor((Date.now() - G.startTs) / 1000);
+  el.timeVal.textContent = fmtTime(G.elapsed);
+}
+function startTimer() {
+  clearInterval(G.timerId);
+  G.startTs = Date.now();
+  G.elapsed = 0;
+  el.timeVal.textContent = '00:00';
+  G.timerId = setInterval(tick, 250);
+}
+
+/* =========================================================
+   7. 发牌
+   ========================================================= */
+function deal() {
+  clearInterval(G.timerId);
+  G.solved = false;
+  G.sel = [];
+  G.op = null;
+  G.history = [];
+  G.hintCards = [];
+  G.hints = 0;
+  G.fxDeal = true;
+  G.fxPop = null;
+
+  let nums = null;
+  for (let i = 0; i < 24; i++) {
+    nums = makeNumbers(G.difficulty);
+    if (!G.lastNums || nums.join(',') !== G.lastNums.join(',')) break;
+  }
+  G.lastNums = nums.slice();
+
+  const suitPool = [SUITS[0], SUITS[1], SUITS[2], SUITS[3]];
+  G.cards = nums.map((n, i) => ({
+    id: newId(),
+    f: fr(n),
+    node: { text: String(n), prec: 3 },
+    merged: false,
+    suit: suitPool[i]
+  }));
+
+  G.initial = snapshot();
+  G.solutions = solveAll(G.cards).map(s => s.text);
+
+  el.roundNo.textContent = String(G.round);
+  render();
+  idleStatus();
+  startTimer();
+}
+
+/* =========================================================
+   8. 交互
+   ========================================================= */
+function onCard(id) {
+  if (G.solved) return;
+  const at = G.sel.indexOf(id);
+
+  if (at >= 0) {                       // 取消选中
+    G.sel.splice(at, 1);
+    G.hintCards = [];
+    render(); idleStatus(); return;
+  }
+
+  if (G.sel.length >= 2) {             // 已选两张，重新开始
+    G.sel = [id];
+  } else {
+    G.sel.push(id);
+  }
+  G.hintCards = [];
+  beep(540, 0.06, 'sine', 0.035);
+  render();
+
+  if (G.sel.length === 2 && G.op) doCombine();
+  else idleStatus();
+}
+
+function onOp(op) {
+  if (G.solved) return;
+  if (G.sel.length === 2) {
+    G.op = op;
+    render();
+    doCombine();
+    return;
+  }
+  G.op = (G.op === op) ? null : op;
+  render(); idleStatus();
+}
+
+function doCombine() {
+  if (G.solved || G.sel.length !== 2 || !G.op) return;
+  const a = byId(G.sel[0]);
+  const b = byId(G.sel[1]);
+  if (!a || !b) return;
+
+  const t = buildTerm(a, b, G.op, false);
+  if (!t) {
+    status('不能除以 0，换一个运算符', 'warn');
+    beep(190, 0.14, 'triangle', 0.05);
+    G.op = null;
+    render();
+    return;
+  }
+
+  G.history.push(snapshot());
+  if (G.history.length > 60) G.history.shift();
+
+  const ia = G.cards.indexOf(a);
+  const ib = G.cards.indexOf(b);
+  const at = Math.min(ia, ib);
+
+  const nc = { id: newId(), f: t.f, node: { text: t.node.text, prec: t.node.prec }, merged: true, suit: '' };
+  G.cards = G.cards.filter(c => c !== a && c !== b);
+  G.cards.splice(Math.min(at, G.cards.length), 0, nc);
+
+  G.sel = [];
+  G.op = null;
+  G.hintCards = [];
+  G.fxPop = nc.id;
+
+  beep(700, 0.09, 'sine', 0.045);
+  render();
+  afterMove();
+}
+
+function afterMove() {
+  if (G.cards.length === 1) {
+    if (fEq(G.cards[0].f, F24)) win();
+    else statusHtml('结果是 ' + fHtml(G.cards[0].f) + '，差一点。撤销一步再试。', 'warn');
+    return;
+  }
+  if (solveAll(G.cards).length === 0) {
+    status('这个局面已经凑不出 24 了，撤销一步吧。', 'warn');
+  } else {
+    status(G.cards.length === 2 ? '只剩两张牌了，一步定胜负' : '还剩 ' + G.cards.length + ' 张牌', '');
+  }
+}
+
+function undo() {
+  if (G.solved) return;
+  const h = G.history.pop();
+  if (!h) return;
+  G.cards = h.cards;
+  G.sel = h.sel;
+  G.op = null;            // 保留选中的两张牌，但清掉运算符，避免下一次点击被"静默合并"
+  G.hintCards = [];
+  beep(420, 0.07, 'sine', 0.035);
+  render(); idleStatus();
+}
+
+function resetRound() {
+  if (G.solved) return;
+  G.cards = G.initial.cards.map(c => ({ id: c.id, f: { n: c.f.n, d: c.f.d }, node: { text: c.node.text, prec: c.node.prec }, merged: c.merged, suit: c.suit }));
+  G.sel = [];
+  G.op = null;
+  G.history = [];
+  G.hintCards = [];
+  G.fxDeal = true;
+  render();
+  status('已回到最初的四个数', '');
+  startTimer();
+}
+
+function hint() {
+  if (G.solved) return;
+  const sols = solveAll(G.cards);
+  if (!sols.length) {
+    status('当前局面已无解，建议撤销一步。', 'warn');
+    return;
+  }
+  const mv = firstMove(sols[0].tree);
+  if (!mv) return;
+
+  G.hints = Math.min(G.hints + 1, 3);
+  const a = byId(mv.a), b = byId(mv.b);
+
+  if (G.hints === 1 && a && b) {
+    G.hintCards = [mv.a, mv.b];
+    status('提示：先把高亮的这两张牌合并。', 'hint');
+  } else if (G.hints === 2 && a && b) {
+    G.hintCards = [mv.a, mv.b];
+    statusHtml('提示：试试 ' + fHtml(a.f) + ' ' + OPS[mv.op].sym + ' ' + fHtml(b.f) + ' = ' + fHtml(OPS[mv.op].fn(a.f, b.f)) + '。', 'hint');
+  } else {
+    G.hintCards = [];
+    status('完整思路：' + sols[0].text + ' = 24', 'hint');
+  }
+  beep(880, 0.07, 'sine', 0.035);
+  render();
+}
+
+function swapSelection() {
+  if (G.sel.length !== 2) return;
+  G.sel.reverse();
+  render(); idleStatus();
+}
+
+/* ---------- 小程序码放大 ---------- */
+let qrFrom = null;
+function openQr(ev) {
+  qrFrom = (ev && ev.currentTarget) ? ev.currentTarget : null;
+  el.qrVeil.hidden = false;
+  el.qrClose.focus();
+}
+function closeQr() {
+  el.qrVeil.hidden = true;
+  if (qrFrom && qrFrom.focus) qrFrom.focus();
+  qrFrom = null;
+}
+
+/* =========================================================
+   9. 胜利
+   ========================================================= */
+function win() {
+  clearInterval(G.timerId);
+  G.elapsed = Math.max(1, Math.floor((Date.now() - G.startTs) / 1000));
+  el.timeVal.textContent = fmtTime(G.elapsed);
+  G.solved = true;
+  G.streak += 1;
+
+  const timeSec = G.elapsed;
+  const penalty = Math.min(60, G.hints * 20);
+  const pts = Math.max(30, Math.round(130 - timeSec * 1.2) + (G.streak - 1) * 15 - penalty);
+  G.score += pts;
+  if (G.score > G.best) { G.best = G.score; LS.set('g24.best', String(G.best)); }
+
+  el.scoreVal.textContent = String(G.score);
+  el.streakVal.textContent = String(G.streak);
+
+  const expr = G.cards[0].node.text;
+  el.winExpr.innerHTML = '<b>' + esc(expr) + ' = 24</b>';
+  el.winSub.textContent = G.streak >= 3
+    ? '连击 ×' + G.streak + '，状态正好'
+    : (G.hints ? '借助提示完成了这一局' : '一次算对，干净利落');
+
+  el.winGains.innerHTML =
+    '<div>本局<b>+' + pts + '</b></div>' +
+    '<div>用时<b>' + fmtTime(G.elapsed) + '</b></div>' +
+    '<div>累计<b>' + G.score + '</b></div>' +
+    (G.best > 0 ? '<div>最高<b>' + G.best + '</b></div>' : '');
+
+  const list = el.winList;
+  const summary = el.winSummary;
+  list.innerHTML = '';
+  if (G.solutions.length) {
+    summary.textContent = '参考解法 · 共 ' + G.solutions.length + ' 条表达式';
+    el.winDetails.hidden = false;
+    el.winDetails.open = false;
+    G.solutions.slice(0, 10).forEach(s => {
+      const li = document.createElement('li');
+      li.textContent = s + ' = 24';
+      list.appendChild(li);
+    });
+  } else {
+    el.winDetails.hidden = true;
+  }
+
+  status('24 达成：' + expr + ' = 24', 'good');
+  el.veil.hidden = false;
+  el.nextBtn.focus();
+  fanfare();
+}
+
+function nextRound() {
+  el.veil.hidden = true;
+  G.round += 1;
+  deal();
+}
+
+/* =========================================================
+   10. 设置
+   ========================================================= */
+function setDifficulty(d) {
+  G.difficulty = d;
+  Array.prototype.forEach.call(el.diff.querySelectorAll('button'), b => {
+    b.classList.toggle('on', b.dataset.d === d);
+  });
+  LS.set('g24.diff', d);
+  G.streak = 0;
+  G.score = 0;
+  G.round = 1;
+  el.scoreVal.textContent = '0';
+  el.streakVal.textContent = '0';
+  deal();
+}
+
+function setSound(on) {
+  G.sound = on;
+  el.sound.classList.toggle('off', !on);
+  el.sound.setAttribute('aria-pressed', on ? 'true' : 'false');
+  el.soundLabel.textContent = on ? '音效 开' : '音效 关';
+  LS.set('g24.sound', on ? '1' : '0');
+  if (on) beep(660, 0.08, 'sine', 0.04);
+}
+
+/* =========================================================
+   11. 初始化
+   ========================================================= */
+function init() {
+  el.cards = document.getElementById('cards');
+  el.ops = document.getElementById('ops');
+  el.status = document.getElementById('status');
+  el.undo = document.getElementById('undo');
+  el.reset = document.getElementById('reset');
+  el.hint = document.getElementById('hint');
+  el.skip = document.getElementById('skip');
+  el.swap = document.getElementById('swap');
+  el.timeVal = document.getElementById('timeVal');
+  el.roundNo = document.getElementById('roundNo');
+  el.scoreVal = document.getElementById('scoreVal');
+  el.streakVal = document.getElementById('streakVal');
+  el.diff = document.getElementById('diff');
+  el.sound = document.getElementById('sound');
+  el.soundLabel = document.getElementById('soundLabel');
+  el.veil = document.getElementById('veil');
+  el.winExpr = document.getElementById('winExpr');
+  el.winSub = document.getElementById('winSub');
+  el.winGains = document.getElementById('winGains');
+  el.winList = document.getElementById('winList');
+  el.winSummary = document.getElementById('winSummary');
+  el.winDetails = document.getElementById('winDetails');
+  el.nextBtn = document.getElementById('nextBtn');
+  el.qrBtn = document.getElementById('promoCard');
+  el.winPromo = document.getElementById('winPromo');
+  el.qrVeil = document.getElementById('qrVeil');
+  el.qrClose = document.getElementById('qrClose');
+  el.qrHint = document.getElementById('qrHint');
+
+  /* 运算符按钮 */
+  el.ops.innerHTML = '';
+  OPKEYS.forEach(op => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'op';
+    b.dataset.op = op;
+    b.textContent = OPS[op].sym;
+    b.setAttribute('aria-label', '运算符 ' + OPS[op].sym);
+    el.ops.appendChild(b);
+  });
+
+  /* 事件委托 */
+  el.cards.addEventListener('click', e => {
+    const card = e.target.closest('.card');
+    if (card) onCard(card.dataset.id);
+  });
+  el.ops.addEventListener('click', e => {
+    const btn = e.target.closest('.op');
+    if (btn) onOp(btn.dataset.op);
+  });
+  el.undo.addEventListener('click', undo);
+  el.reset.addEventListener('click', resetRound);
+  el.hint.addEventListener('click', hint);
+  el.skip.addEventListener('click', () => { G.streak = 0; el.streakVal.textContent = '0'; G.round += 1; deal(); });
+  el.swap.addEventListener('click', swapSelection);
+  el.nextBtn.addEventListener('click', nextRound);
+  el.qrBtn.addEventListener('click', openQr);
+  el.qrBtn.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); openQr(); }
+  });
+  el.winPromo.addEventListener('click', openQr);
+  el.qrClose.addEventListener('click', closeQr);
+  el.qrVeil.addEventListener('click', e => { if (e.target === el.qrVeil) closeQr(); });
+  el.diff.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (b && b.dataset.d !== G.difficulty) setDifficulty(b.dataset.d);
+  });
+  el.sound.addEventListener('click', () => setSound(!G.sound));
+
+  /* 键盘 */
+  document.addEventListener('keydown', e => {
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    const k = e.key;
+
+    if (!el.qrVeil.hidden) {                 // 小程序码层打开时，只响应 Esc
+      if (k === 'Escape') { closeQr(); e.preventDefault(); }
+      return;
+    }
+
+    if (k >= '1' && k <= '4') {
+      const c = G.cards[Number(k) - 1];
+      if (c) { onCard(c.id); e.preventDefault(); }
+      return;
+    }
+    if (k === '+') { onOp('+'); e.preventDefault(); return; }
+    if (k === '-') { onOp('-'); e.preventDefault(); return; }
+    if (k === '*' || k === 'x' || k === 'X') { onOp('*'); e.preventDefault(); return; }
+    if (k === '/') { onOp('/'); e.preventDefault(); return; }
+    if (k.toLowerCase() === 'u') { undo(); return; }
+    if (k.toLowerCase() === 'r') { resetRound(); return; }
+    if (k.toLowerCase() === 'h') { hint(); return; }
+    if (k === 'Escape') { G.sel = []; G.op = null; G.hintCards = []; render(); idleStatus(); return; }
+    if (k === 'Enter' || k === ' ') {
+      if (G.solved) { e.preventDefault(); nextRound(); }
+    }
+  });
+
+  /* 读取偏好 */
+  const ua = navigator.userAgent || '';
+  const inWx = /MicroMessenger/i.test(ua);
+  const mobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  el.qrHint.textContent = inWx
+    ? '长按图片即可识别，进入「凑廿四」'
+    : (mobile ? '截图后，在微信「扫一扫」→ 相册 中识别' : '打开手机微信「扫一扫」，扫描屏幕上的二维码');
+
+  G.sound = LS.get('g24.sound', '1') === '1';
+  setSound(G.sound);
+  const d = LS.get('g24.diff', 'standard');
+  G.difficulty = ['easy', 'standard', 'hard'].indexOf(d) >= 0 ? d : 'standard';
+  Array.prototype.forEach.call(el.diff.querySelectorAll('button'), b => {
+    b.classList.toggle('on', b.dataset.d === G.difficulty);
+  });
+  G.best = Number(LS.get('g24.best', '0')) || 0;
+
+  deal();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
